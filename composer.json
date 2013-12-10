@@ -1,0 +1,21 @@
+{
+    "name": "bitcont/bitcoin",
+    "description": "Lightweight PHP bitcoin client.",
+    "authors": [
+        {
+            "name": "Michal Spicka",
+            "email": "info@bitcont.net"
+        }
+    ],
+    "minimum-stability": "dev",
+	"require": {
+		"php": ">= 5.3.0",
+		"kdyby/curl": "@dev",
+		"tivoka/tivoka": "*"
+	},
+	"autoload": {
+		"psr-0": {
+			"Bitcont\\Bitcoin": "src/"
+		}
+	}
+}
