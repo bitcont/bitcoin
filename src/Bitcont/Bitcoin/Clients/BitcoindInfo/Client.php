@@ -64,6 +64,31 @@ class Client implements IParser
 	 */
 	protected $transactions = array();
 
+	/**
+	 * Bitcoind username.
+	 *
+	 * @var string
+	 */
+	protected $bitcoindUsername;
+
+	/**
+	 * Bitcoind password.
+	 *
+	 * @var string
+	 */
+	protected $bitcoindPassword;
+
+
+	/**
+	 * @param string $bitcoindUsername
+	 * @param string $bitcoindPassword
+	 */
+	public function __construct($bitcoindUsername, $bitcoindPassword)
+	{
+		$this->bitcoindUsername = $bitcoindUsername;
+		$this->bitcoindPassword = $bitcoindPassword;
+	}
+
 
 	/**
 	 * Returns address by id.
@@ -160,7 +185,7 @@ class Client implements IParser
 		$this->transactions[$id] = $transaction = $this->assembleTransactionInstance($id);
 
 		// init tivoka
-		$tivoka = Tivoka::connect('http://generated_by_armory:HwheZHGyEDCno9SEavzSiLMHCYyhJEaLhsh1ytiGP9r1@localhost:8332/');
+		$tivoka = Tivoka::connect("http://{$this->bitcoindUsername}:{$this->bitcoindPassword}@localhost:8332/");
 		$tivoka->useSpec('1.0');
 
 		// get raw transaction
