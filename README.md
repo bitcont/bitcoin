@@ -1,4 +1,5 @@
-bitcoin
-=======
+Installation
+============
+
 
 Lightweight PHP blockchain parser.
