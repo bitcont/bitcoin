@@ -1,20 +1,19 @@
 Parsers
-=======
+-------
 At the moment, two parsers are available.
 
-Blockchain.info
----------------
-This parser uses blockchain.info API to retrieve information about addresses and transactions. It is easy to setup, but can be quite slow.
+###blockchain.info###
+This parser uses blockchain.info API to retrieve information about addresses and transactions. It is easy to set up, but can be quite slow.
 
-Blockchain.info + Bitcoind combined
------------------------------------
+###blockchain.info + bitcoind combined###
 This parser uses blockchain.info API to retrieve information about addresses and bitcoind json-rpc API to retrieve information about transactions. It is faster, but requires bitcoind.
 
+###custom parser###
 You can add your own parser as long as it implements Bitcont\Bitcoin\Clients\IParser interface.
 
 
 Examples
-========
+--------
 
 ```php
 // create new blockchain.info parser
@@ -48,10 +47,10 @@ $transactions = $bitcoin->getTransactions($address); // returns array of ITransa
 
 
 Installation
-============
+------------
 Installation via composer recommended.
 
 
 Requirements
-============
+------------
 PHP 5.3 or higher.
