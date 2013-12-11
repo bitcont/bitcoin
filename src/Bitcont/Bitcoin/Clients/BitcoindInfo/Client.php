@@ -3,13 +3,14 @@
 namespace Bitcont\Bitcoin\Clients\BitcoindInfo;
 
 use Bitcont\Bitcoin\Clients\IParser,
+	Bitcont\Bitcoin\Clients\IValidator,
 	Bitcont\Bitcoin\Protocol\IAddress,
 	Kdyby\Curl\Request,
 	Tivoka\Client as Tivoka,
 	ReflectionClass;
 
 
-class Client implements IParser
+class Client implements IParser, IValidator
 {
 
 	/**
@@ -77,6 +78,13 @@ class Client implements IParser
 	 * @var string
 	 */
 	protected $bitcoindPassword;
+
+	/**
+	 * Stores bitcoind connection.
+	 *
+	 * @var string
+	 */
+	protected $bitcoindConnection;
 
 
 	/**
@@ -184,19 +192,18 @@ class Client implements IParser
 		// assemble transaction
 		$this->transactions[$id] = $transaction = $this->assembleTransactionInstance($id);
 
-		// init tivoka
-		$tivoka = Tivoka::connect("http://{$this->bitcoindUsername}:{$this->bitcoindPassword}@localhost:8332/");
-		$tivoka->useSpec('1.0');
+		// init bitcoind connection
+		$bitcoind = $this->getBitcoindConnection();
 
 		// get raw transaction
-		$request = $tivoka->sendRequest('getrawtransaction', array($id, 1));
+		$request = $bitcoind->sendRequest('getrawtransaction', array($id, 1));
 		$result = $request->result;
 
 		// fetch inputs
 		foreach ($result['vin'] as $in) {
 
 			// get previous transaction data
-			$request = $tivoka->sendRequest('getrawtransaction', array($in['txid'], 1));
+			$request = $bitcoind->sendRequest('getrawtransaction', array($in['txid'], 1));
 			$resultPrevTx = $request->result;
 
 			// connect previous output with current input
@@ -222,6 +229,43 @@ class Client implements IParser
 
 		// return result
 		return $transaction;
+	}
+
+
+	/**
+	 * Returns TRUE if address is a valid bitcoin address.
+	 *
+	 * @param string $address
+	 * @return bool
+	 */
+	public function isValidAddress($address)
+	{
+		// init bitcoind connection
+		$bitcoind = $this->getBitcoindConnection();
+
+		// send request
+		$request = $bitcoind->sendRequest('validateaddress', array($address));
+		$result = $request->result;
+
+		// evaluate result
+		return (bool) $result['isvalid'];
+	}
+
+
+	/**
+	 * Returns set-up bitcoind json-rpc client.
+	 *
+	 * @return Tivoka\Client
+	 */
+	protected function getBitcoindConnection()
+	{
+		if (isset($this->bitcoindConnection)) {
+			return $this->bitcoindConnection;
+		}
+
+		$this->bitcoindConnection = Tivoka::connect("http://{$this->bitcoindUsername}:{$this->bitcoindPassword}@localhost:8332/");
+		$this->bitcoindConnection->useSpec('1.0');
+		return $this->bitcoindConnection;
 	}
 
 

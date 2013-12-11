@@ -3,12 +3,14 @@
 namespace Bitcont\Bitcoin\Clients\BlockchainInfo;
 
 use Bitcont\Bitcoin\Clients\IParser,
+	Bitcont\Bitcoin\Clients\IValidator,
 	Bitcont\Bitcoin\Protocol\IAddress,
 	Kdyby\Curl\Request,
+	Kdyby\Curl\BadStatusException,
 	ReflectionClass;
 
 
-class Client implements IParser
+class Client implements IParser, IValidator
 {
 
 	/**
@@ -204,6 +206,30 @@ class Client implements IParser
 
 		// return result
 		return $transaction;
+	}
+
+
+	/**
+	 * Returns TRUE if address is a valid bitcoin address.
+	 *
+	 * @param string $address
+	 * @return bool
+	 */
+	public function isValidAddress($address)
+	{
+		// construct first page url
+		$url = static::ADDRESS_API_URL . $address . '?limit=1';
+
+		// fetch the page
+		$request = new Request($url);
+		$request->setCertificationVerify(FALSE);
+		try {
+			$request->get()->getResponse();
+			return TRUE;
+
+		} catch (BadStatusException $e) {
+			return FALSE;
+		}
 	}
 
 

@@ -16,8 +16,9 @@ Example
 -------
 
 ```php
-// create new blockchain.info parser
-$bitcoin = new Bitcont\Bitcoin\Clients\BlockchainInfo\Client;
+// choose your parser
+$bitcoin = new Bitcont\Bitcoin\Clients\BlockchainInfo\Client; // blockchain.info parser
+$bitcoin = new Bitcont\Bitcoin\Clients\BitcoindInfo\Client('bitcoind username', 'bitcoind password'); // blockchain.info + bitcoind parser
 
 // get bitcoin address
 $address = $bitcoin->getAddress('1Kug5MazR3c8VsBn61JZdvzdix49K7CCES'); // returns IAddress
