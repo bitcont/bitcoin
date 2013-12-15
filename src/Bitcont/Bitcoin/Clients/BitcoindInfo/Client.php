@@ -203,6 +203,11 @@ class Client implements IParser, IValidator
 		// fetch inputs
 		foreach ($result['vin'] as $in) {
 
+			// ignore coinbase
+			if (!isset($in['txid'])) {
+				break;
+			}
+
 			// get previous transaction data
 			$request = $bitcoind->sendRequest('getrawtransaction', array($in['txid'], 1));
 			$resultPrevTx = $request->result;
