@@ -142,11 +142,12 @@ class Client implements IParser, IValidator
 		// loop over all pages
 		$transactions = array();
 		while (count($data['txs']) > 0) {
-
 			foreach ($data['txs'] as $tx) {
-				$transaction = $this->getTransaction($tx['hash']);
-				if (!in_array($transaction, $transactions)) {
-					$transactions[] = $this->getTransaction($tx['hash']);
+				if (isset($tx['block_height'])) { // include only confirmed transactions
+					$transaction = $this->getTransaction($tx['hash']);
+					if (!in_array($transaction, $transactions)) {
+						$transactions[] = $this->getTransaction($tx['hash']);
+					}
 				}
 			}
 
